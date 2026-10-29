@@ -12,13 +12,13 @@ export async function handler(event) {
     if (event.httpMethod === 'GET') {
       const email = event.queryStringParameters?.email;
       const rows = email
-        ? await sql`SELECT * FROM bookings WHERE LOWER(guest_email) = LOWER(${email}) ORDER BY created_at DESC`
-        : await sql`SELECT * FROM bookings ORDER BY created_at DESC LIMIT 50`;
+        ? await sql`SELECT * FROM itinerboon_bookings WHERE LOWER(guest_email) = LOWER(${email}) ORDER BY created_at DESC`
+        : await sql`SELECT * FROM itinerboon_bookings ORDER BY created_at DESC LIMIT 50`;
 
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ ok: true, source: 'neondb-serverless', bookings: rows })
+        body: JSON.stringify({ ok: true, source: 'neondb-serverless', table: 'itinerboon_bookings', bookings: rows })
       };
     }
 
@@ -28,7 +28,7 @@ export async function handler(event) {
       const pinCode = b.pin_code || String(Math.floor(1000 + Math.random() * 9000));
 
       const rows = await sql`
-        INSERT INTO bookings (
+        INSERT INTO itinerboon_bookings (
           booking_ref, pin_code, booking_type, item_id, item_title, location_label,
           check_in, check_out, nights, guests_summary, room_or_tier,
           guest_name, guest_email, guest_phone, special_requests, arrival_window,
@@ -46,14 +46,14 @@ export async function handler(event) {
       return {
         statusCode: 201,
         headers: corsHeaders,
-        body: JSON.stringify({ ok: true, source: 'neondb-serverless', booking: rows[0] })
+        body: JSON.stringify({ ok: true, source: 'neondb-serverless', table: 'itinerboon_bookings', booking: rows[0] })
       };
     }
 
     if (event.httpMethod === 'PATCH') {
       const { booking_ref, status, check_in, check_out, guests_summary, special_requests } = JSON.parse(event.body || '{}');
       const rows = await sql`
-        UPDATE bookings
+        UPDATE itinerboon_bookings
         SET
           status = COALESCE(${status || null}, status),
           check_in = COALESCE(${check_in || null}, check_in),
@@ -67,7 +67,7 @@ export async function handler(event) {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ ok: true, source: 'neondb-serverless', booking: rows[0] })
+        body: JSON.stringify({ ok: true, source: 'neondb-serverless', table: 'itinerboon_bookings', booking: rows[0] })
       };
     }
 

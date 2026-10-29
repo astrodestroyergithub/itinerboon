@@ -840,7 +840,7 @@
       <div class="flex items-center justify-between border-b border-sky-100 pb-3">
         <div>
           <h3 class="font-display font-extrabold text-lg sm:text-xl text-slate-900">🧳 My Trips &amp; Reservations</h3>
-          <p class="text-xs text-slate-500">Synced with NeonDB `bookings` table • Instant PIN &amp; voucher access</p>
+          <p class="text-xs text-slate-500">Synced with NeonDB `itinerboon_bookings` table • Instant PIN &amp; voucher access</p>
         </div>
         <button type="button" onclick="closeModal('bookingsModal')" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold">✕</button>
       </div>
@@ -901,7 +901,7 @@
       <div class="flex items-center justify-between border-b border-sky-100 pb-3">
         <div>
           <h3 class="font-display font-extrabold text-lg text-slate-900">🏠 List Your Property on Itinerboon</h3>
-          <p class="text-xs text-slate-500">Instantly publishes to the live catalog &amp; inserts into NeonDB `properties`</p>
+          <p class="text-xs text-slate-500">Instantly publishes to the live catalog &amp; inserts into NeonDB `itinerboon_properties`</p>
         </div>
         <button type="button" onclick="closeModal('hostModal')" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold">✕</button>
       </div>
@@ -1588,8 +1588,8 @@
         ]
       },
       sqlLogs: [
-        { time: '22:08:01', latency: '11ms', sql: 'SELECT * FROM properties ORDER BY rating DESC, reviews_count DESC;' },
-        { time: '22:08:02', latency: '9ms', sql: "SELECT * FROM bookings WHERE guest_email = 'aria.vance@itinerboon.com';" }
+        { time: '22:08:01', latency: '11ms', sql: 'SELECT * FROM itinerboon_properties ORDER BY rating DESC, reviews_count DESC;' },
+        { time: '22:08:02', latency: '9ms', sql: "SELECT * FROM itinerboon_bookings WHERE guest_email = 'aria.vance@itinerboon.com';" }
       ],
       activeCheckout: null
     };
@@ -1632,11 +1632,11 @@
 
       // Log SQL operation for transparency in NeonDB Studio
       if (endpoint === 'properties' && method === 'GET') {
-        logSqlQuery(`SELECT * FROM properties WHERE price_usd <= ${state.maxPriceUsd} ORDER BY rating DESC;`, '12ms');
+        logSqlQuery(`SELECT * FROM itinerboon_properties WHERE price_usd <= ${state.maxPriceUsd} ORDER BY rating DESC;`, '12ms');
       } else if (endpoint === 'bookings' && method === 'POST' && payload) {
-        logSqlQuery(`INSERT INTO bookings (booking_ref, item_title, guest_email, total_amount_usd) VALUES ('${payload.booking_ref}', '${payload.item_title.replace(/'/g, "''")}', '${payload.guest_email}', ${payload.total_amount_usd});`, '16ms');
+        logSqlQuery(`INSERT INTO itinerboon_bookings (booking_ref, item_title, guest_email, total_amount_usd) VALUES ('${payload.booking_ref}', '${payload.item_title.replace(/'/g, "''")}', '${payload.guest_email}', ${payload.total_amount_usd});`, '16ms');
       } else if (endpoint === 'properties' && method === 'POST' && payload) {
-        logSqlQuery(`INSERT INTO properties (id, title, city, price_usd) VALUES ('${payload.id}', '${payload.title.replace(/'/g, "''")}', '${payload.city}', ${payload.price_usd});`, '15ms');
+        logSqlQuery(`INSERT INTO itinerboon_properties (id, title, city, price_usd) VALUES ('${payload.id}', '${payload.title.replace(/'/g, "''")}', '${payload.city}', ${payload.price_usd});`, '15ms');
       }
 
       if (window.location.protocol.startsWith('http') && !window.location.hostname.includes('googleusercontent')) {
@@ -2177,7 +2177,7 @@
 
           <!-- Submit New Verified Review to NeonDB -->
           <form onsubmit="submitPropertyReview(event, '${p.id}')" class="p-4 rounded-2xl bg-slate-50 border border-sky-200 space-y-3">
-            <h4 class="font-bold text-xs uppercase tracking-wider text-sky-800">Share Your Experience (Syncs with NeonDB reviews table)</h4>
+            <h4 class="font-bold text-xs uppercase tracking-wider text-sky-800">Share Your Experience (Syncs with NeonDB itinerboon_reviews table)</h4>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
               <input id="revNameInput" type="text" required placeholder="Your Name" class="px-3 py-2 rounded-xl bg-white border border-sky-200" />
               <input id="revTitleInput" type="text" required placeholder="Review Headline" class="px-3 py-2 rounded-xl bg-white border border-sky-200" />
@@ -3049,7 +3049,7 @@
       target.status = 'Cancelled';
       saveStateToStorage();
       await callNeonApi('bookings', 'PATCH', { booking_ref: bookingRef, status: 'Cancelled' });
-      logSqlQuery(`UPDATE bookings SET status = 'Cancelled', updated_at = NOW() WHERE booking_ref = '${bookingRef}';`, '13ms');
+      logSqlQuery(`UPDATE itinerboon_bookings SET status = 'Cancelled', updated_at = NOW() WHERE booking_ref = '${bookingRef}';`, '13ms');
       renderBookingsModal();
       updateBadges();
       showToast('Booking Cancelled Free of Charge', `Reservation ${bookingRef} status updated to Cancelled in NeonDB.`, 'sky');
@@ -3154,7 +3154,7 @@
     }
 
     function copySqlSchema() {
-      const ddl = `CREATE TABLE IF NOT EXISTS properties (id VARCHAR(64) PRIMARY KEY, title VARCHAR(255) NOT NULL, category VARCHAR(64), city VARCHAR(120), country VARCHAR(120), rating NUMERIC(3,1), price_usd INTEGER, hero_image VARCHAR(255));\nCREATE TABLE IF NOT EXISTS bookings (booking_ref VARCHAR(32) PRIMARY KEY, pin_code VARCHAR(10), item_title VARCHAR(255), guest_name VARCHAR(160), guest_email VARCHAR(180), total_amount_usd NUMERIC(10,2), status VARCHAR(32));`;
+      const ddl = `CREATE TABLE IF NOT EXISTS itinerboon_properties (id VARCHAR(64) PRIMARY KEY, title VARCHAR(255) NOT NULL, category VARCHAR(64), city VARCHAR(120), country VARCHAR(120), rating NUMERIC(3,1), price_usd INTEGER, hero_image VARCHAR(255));\nCREATE TABLE IF NOT EXISTS itinerboon_bookings (booking_ref VARCHAR(32) PRIMARY KEY, pin_code VARCHAR(10), item_title VARCHAR(255), guest_name VARCHAR(160), guest_email VARCHAR(180), total_amount_usd NUMERIC(10,2), status VARCHAR(32));`;
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(ddl);

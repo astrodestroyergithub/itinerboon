@@ -12,20 +12,20 @@ export async function handler(event) {
     if (event.httpMethod === 'GET') {
       const propertyId = event.queryStringParameters?.property_id;
       const rows = propertyId
-        ? await sql`SELECT * FROM reviews WHERE property_id = ${propertyId} ORDER BY created_at DESC`
-        : await sql`SELECT * FROM reviews ORDER BY created_at DESC LIMIT 30`;
+        ? await sql`SELECT * FROM itinerboon_reviews WHERE property_id = ${propertyId} ORDER BY created_at DESC`
+        : await sql`SELECT * FROM itinerboon_reviews ORDER BY created_at DESC LIMIT 30`;
 
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ ok: true, source: 'neondb-serverless', reviews: rows })
+        body: JSON.stringify({ ok: true, source: 'neondb-serverless', table: 'itinerboon_reviews', reviews: rows })
       };
     }
 
     if (event.httpMethod === 'POST') {
       const r = JSON.parse(event.body || '{}');
       const inserted = await sql`
-        INSERT INTO reviews (
+        INSERT INTO itinerboon_reviews (
           property_id, reviewer_name, reviewer_country, traveler_type,
           room_stayed, stay_month, score, title, positive_note, constructive_note
         ) VALUES (
@@ -39,7 +39,7 @@ export async function handler(event) {
       return {
         statusCode: 201,
         headers: corsHeaders,
-        body: JSON.stringify({ ok: true, source: 'neondb-serverless', review: inserted[0] })
+        body: JSON.stringify({ ok: true, source: 'neondb-serverless', table: 'itinerboon_reviews', review: inserted[0] })
       };
     }
 

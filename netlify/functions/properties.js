@@ -14,7 +14,7 @@ export async function handler(event) {
       const { city, category, maxPrice, minRating } = params;
 
       let rows = await sql`
-        SELECT * FROM properties
+        SELECT * FROM itinerboon_properties
         ORDER BY rating DESC, reviews_count DESC
       `;
 
@@ -40,7 +40,7 @@ export async function handler(event) {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ ok: true, source: 'neondb-serverless', count: rows.length, properties: rows })
+        body: JSON.stringify({ ok: true, source: 'neondb-serverless', table: 'itinerboon_properties', count: rows.length, properties: rows })
       };
     }
 
@@ -72,7 +72,7 @@ export async function handler(event) {
 
       const propId = id || `prop_${Date.now()}`;
       const inserted = await sql`
-        INSERT INTO properties (
+        INSERT INTO itinerboon_properties (
           id, title, category, city, country, neighborhood, distance_from_center,
           stars, rating, review_label, reviews_count, price_usd, original_price_usd,
           genius_level, free_cancellation, breakfast_included, no_prepayment,
@@ -89,7 +89,7 @@ export async function handler(event) {
       return {
         statusCode: 201,
         headers: corsHeaders,
-        body: JSON.stringify({ ok: true, source: 'neondb-serverless', property: inserted[0] })
+        body: JSON.stringify({ ok: true, source: 'neondb-serverless', table: 'itinerboon_properties', property: inserted[0] })
       };
     }
 
