@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="skyBg" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F0F9FF"/>
+      <stop offset="55%" stop-color="#E0F2FE"/>
+      <stop offset="100%" stop-color="#BAE6FD"/>
+    </linearGradient>
+    <linearGradient id="oceanRing" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <linearGradient id="sunGold" x1="24" y1="14" x2="42" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <!-- Crisp Light Squircle Base -->
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="url(#skyBg)" stroke="url(#oceanRing)" stroke-width="3"/>
+  <!-- Warm Golden Horizon Sun -->
+  <circle cx="43" cy="20" r="6.5" fill="url(#sunGold)"/>
+  <!-- Location Pin / Compass Silhouette -->
+  <path d="M27 13C19.82 13 14 18.82 14 26C14 35.25 27 49 27 49C27 49 40 35.25 40 26C40 18.82 34.18 13 27 13ZM27 30.5C24.51 30.5 22.5 28.49 22.5 26C22.5 23.51 24.51 21.5 27 21.5C29.49 21.5 31.5 23.51 31.5 26C31.5 28.49 29.49 30.5 27 30.5Z" fill="url(#oceanRing)"/>
+  <!-- Soaring Paper Plane / Boon Wing cutting across -->
+  <path d="M17 42L51 25L36 47L31.5 38.5L17 42Z" fill="#0369A1" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/>
+</svg>

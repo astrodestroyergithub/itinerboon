@@ -1,0 +1,19 @@
+{
+  "name": "itinerboon-netlify-neondb",
+  "version": "2.4.0",
+  "description": "Itinerboon — Global Stays, Flights, Packages, Car Rentals, Attractions & Airport Taxis powered by Netlify & NeonDB Serverless Postgres",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev",
+    "deploy": "netlify deploy --prod",
+    "db:schema": "psql $DATABASE_URL -f db/schema.sql"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "@netlify/functions": "^2.8.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
